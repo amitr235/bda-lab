@@ -1,0 +1,41 @@
+
+1.Create a keyspace by name Employee
+
+create keyspace employee with replication={'class':'SimpleStrategy','replication_factor':'1'};
+use Employee;
+
+2. Create a column family by name employee-Info with attributes Emp_Id Primary Key, Emp_Name, Designation, Date_of_Joining, Salary,Dept_Name.
+
+create table employee_info(emp_id int, emp_name text,designation text, date_of_joining date,salary int, dept_name text,primary key((emp_id),salary));
+
+  
+3. Insert the values into the table in batch.
+
+Begin batch 
+insert into employee_info(emp_id, emp_name,designation, date_of_joining,salary, dept_name) values(121,'Ajay','Manager','2022-12-12',500000,'Marketing');
+insert into employee_info(emp_id, emp_name,designation, date_of_joining,salary, dept_name) values(234,'Arun','Employee','2020-02-01',10000,'Marketing');
+Apply batch;
+
+select * from employee_info;
+
+
+4. Update Employee name and Department of Emp-Id 121.
+
+update employee_Info Set emp_name='Ajay' dept_name="Marketing" where emp_id=121;
+
+5. Sort the details of Employee records based onsalary.
+
+select * from employee_info;
+
+6. Alter the schema of the table Employee_Info to add a column Projects which stores a set of Projects done by the corresponding Employee.
+
+alter table employee_info add projects set<text>;
+
+7. Update the altered table to add project names.
+
+update employee_info set projects=projects+{'abc','qwe'} where emp_id=121 and salary=500000;
+update employee_info set projects=projects+{'xyz','rty'} where emp_id=234 and salary=10000;
+
+8.Create a TTL of 15 seconds to display thevalues of Employees.
+
+insert into employee_info(emp_id, emp_name,designation, date_of_joining,salary, dept_name) values(567,'Ashok','Sr Manager','2022-01-15',800000,'Development') using ttl 15;
